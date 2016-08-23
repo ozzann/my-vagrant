@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<be.certipost.hudson.plugin.SCPRepositoryPublisher_-DescriptorImpl plugin="scp@1.8">
+  <sites>
+    <be.certipost.hudson.plugin.SCPSite>
+      <hostname>192.168.56.105</hostname>
+      <port>22</port>
+      <username>root</username>
+      <password>12ankamaster</password>
+      <keyfile></keyfile>
+      <rootRepositoryPath>/etc/puppet</rootRepositoryPath>
+    </be.certipost.hudson.plugin.SCPSite>
+  </sites>
+</be.certipost.hudson.plugin.SCPRepositoryPublisher_-DescriptorImpl>

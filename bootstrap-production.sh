@@ -4,6 +4,7 @@ if ps aux | grep "puppet agent" | grep -v grep 2> /dev/null
 then
     echo "Puppet Agent is already installed. Moving on..."
 else
+    sudo apt-get update -yq && sudo apt-get upgrade -yq
     sudo apt-get install -yq puppet
 fi
  
@@ -11,18 +12,15 @@ if cat /etc/crontab | grep puppet 2> /dev/null
 then
     echo "Puppet Agent is already configured. Exiting..."
 else
-    sudo apt-get update -yq && sudo apt-get upgrade -yq
- 
-    sudo puppet resource cron puppet-agent ensure=present user=root minute=30 \
-        command='/usr/bin/puppet agent --onetime --no-daemonize --splay'
+    sudo puppet resource cron puppet-agent ensure=present user=root minute=30 command='/usr/bin/puppet agent --onetime --no-daemonize --splay'
  
     sudo puppet resource service puppet ensure=running enable=true
  
     # Configure /etc/hosts file
     echo "" | sudo tee --append /etc/hosts 2> /dev/null && \
-    echo "# Host config for Puppet Master and Agent Nodes" | sudo tee --append /etc/hosts 2> /dev/null && \
-    echo "192.168.56.105    puppet.master.vm" | sudo tee --append /etc/hosts 2> /dev/null && \
-    echo "192.168.32.106    production.puppet.node.vm" | sudo tee --append /etc/hosts 2> /dev/null && \
+    echo "# Host config for Puppet Master and Agent Nodes" | sudo tee --append /etc/hosts 2> /dev/null
+    echo "192.168.56.105    puppet.master.vm" | sudo tee --append /etc/hosts 2> /dev/null
+    echo "192.168.32.106    production.puppet.node.vm" | sudo tee --append /etc/hosts 2> /dev/null
     sudo sed -i 's/127\.0\.0\.1.*/&\tproduction.puppet.node.vm/' /etc/hosts
  
     # Add agent section to /etc/puppet/puppet.conf

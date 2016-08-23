@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
             nodeconfig.vm.network :private_network, ip: node_config[':ip']
             
             if node_name == 'jenkins.server.vm'
-                nodeconfig.vm.network :forwarded_port, guest: 8081, host: 8081
+                nodeconfig.vm.network :forwarded_port, guest: 8080, host: 1234
             end
 
             nodeconfig.vm.provider :virtualbox do |vb|

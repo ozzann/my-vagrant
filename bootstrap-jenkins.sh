@@ -9,42 +9,32 @@ else
     wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
     sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
     sudo apt-get -y update
-    sudo apt-get install -y openjdk-7-jre-headles
-    sudo apt-get install -y default-jdk
+    sudo apt-get install -y openjdk-7-jre
     sudo apt-get -y install jenkins
 fi
 
-# Fix java.io.StreamCorruptedException
-#echo "Editing jenkins config file............."
-#sudo sed -i 's/^JAVA_ARGS=[^\n]*/JAVA_ARGS="-Dhudson.diyChunking=false"/' /etc/default/jenkins
-#sudo service jenkins restart
-
-# Download jenkins.jar to be able to access Jenkins through a command line tool
-echo "Download jenkins-cli.jar..."
-wget "http://localhost:8080/jnlpJars/jenkins-cli.jar"
-
-# Turn security off to unlock jenkins
-#sudo sed -i 's/<useSecurity>true<\/useSecurity>/<useSecurity>false<\/useSecurity>/' /var/lib/jenkins/config.xml
-#sudo perl -i -p0e "s/<authorizationStrategy[\s|\S]*authorizationStrategy>//" /var/lib/jenkins/config.xml
-#sudo perl -i -p0e "s/<securityRealm[\s|\S]*securityRealm>//" /var/lib/jenkins/config.xml
-#sudo service jenkins restart
-
-#sudo cat /var/lib/jenkins/config.xml
-
+JENKINSVERSION=$(cat /var/lib/jenkins/config.xml | grep version\>.*\<\/version | grep -o [0-9\.]*)
+echo $JENKINSVERSION >> /var/lib/jenkins/jenkins.install.UpgradeWizard.state
 
 # Install required Jenkins plugins
 echo "Installing Jenkins plugin...."
-java -jar jenkins.cli.jar -s http://localhost:8080/ install-plugin github
-java -jar jenkins.cli.jar -s http://localhost:8080/ install-plugin scp
+sudo wget http://mirrors.jenkins-ci.org/plugins/git/latest/git.hpi -P /var/lib/jenkins/plugins/
+sudo wget http://mirrors.jenkins-ci.org/plugins/git/latest/scp.hpi -P /var/lib/jenkins/plugins/
+
+# Setting Jenkins config
+echo "Setting Jenkins config ..... "
+sudo wget -O /var/lib/jenkins/config.xml https://github.com/ozzann/my-vagrant/blob/master/jenkins/config.xml
 
 # Configure Jenkins jobs:
 echo "Creating Jenkins jobs....."
 
 # one is for main application (basic ping server)
-java -jar jenkins-cli.jar -s http://localhost:8080/ create-job app < jenkins/jobs/app.conf.xml
+sudo mkdir -p /var/lib/jenkins/jobs/app
+sudo wget -O /var/lib/jenkins/jobs/app/config.xml https://github.com/ozzann/my-vagrant/blob/master/jenkins/jobs/app.config.xml
 
 # the other one is for puppet manifests
-java -jar jenkins.cli.jar -s http://localhost:8080/ create-job puppet < jenkins/job/puppet.conf.xml
+sudo mkdir -p /var/lib/jenkins/jobs/puppet
+sudo wget -O /var/lib/jenkins/jobs/puppet/config.xml https://github.com/ozzann/my-vagrant/blob/master/jenkins/jobs/puppet.config.xml
 
-
+sudo /etc/init.d/jenkins restart
 
