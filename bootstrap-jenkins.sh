@@ -44,6 +44,10 @@ restart_jenkins
 echo "Installing Jenkins plugin...."
 
 echo "Installing Github and SCP plugins and its dependencies .............. "
+
+# Download file containing list of required Jenkins plugins
+sudo wget -O plugins-list https://raw.github.com/ozzann/my-vagrant/master/plugins-list
+
 while read line           
 do
     PLUGINNAME=$line
