@@ -16,6 +16,7 @@ sudo apt-get -y install git
 # Install docker
 echo "Installing docker ................."
 sudo wget -O install_docker.sh https://raw.github.com/ozzann/my-vagrant/master/install_docker.sh
+sudo chmod +x install_docker.sh
 sudo ./install_docker.sh
 
 # Install Jenkins
@@ -37,7 +38,6 @@ sudo wget -O /var/lib/jenkins/config.xml https://raw.github.com/ozzann/my-vagran
 
 JENKINSVERSION=$(cat /var/lib/jenkins/config.xml | grep version\>.*\<\/version | grep -o [0-9\.]*)
 echo $JENKINSVERSION >> /var/lib/jenkins/jenkins.install.UpgradeWizard.state
-
 
 restart_jenkins
 
@@ -66,6 +66,9 @@ done <plugins-list
 restart_jenkins
 
 sudo wget -O /var/lib/jenkins/be.certipost.hudson.plugin.SCPRepositoryPublisher.xml https://raw.github.com/ozzann/my-vagrant/master/jenkins/be.certipost.hudson.plugin.SCPRepositoryPublisher.xml
+
+echo "Creating credentials ........ "
+sudo wget -O /var/lib/jenkins/credentials.xml https://raw.github.com/ozzann/my-vagrant/master/jenkins/credentials.xml
 
 # Configure Jenkins jobs:
 echo "Creating Jenkins jobs....."
