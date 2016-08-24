@@ -9,7 +9,7 @@ echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sour
 
 sudo apt-get -y update
 sudo apt-get -y purge lxc-docker
-apt-cache policy docker-engine
+sudo apt-cache policy docker-engine
 
 sudo apt-get -y update
 sudo apt-get -y install docker-engine
