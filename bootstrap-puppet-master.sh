@@ -19,6 +19,7 @@ else
  
     # Add optional alternate DNS names and certname to /etc/puppet/puppet.conf
     sudo sed -i 's/.*\[main\].*/&\ndns_alt_names = puppet,puppet.master.vm\ncertname=puppet.master.vm/' /etc/puppet/puppet.conf
+    sudo sed -i 's/^templatedir=.*//' /etc/puppet/puppet.conf
  
     # Install some initial puppet modules on Puppet Master server
     sudo puppet module install puppetlabs-ntp
