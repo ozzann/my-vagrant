@@ -8,9 +8,18 @@ restart_jenkins(){
     done
 }
 
+# Install git
+echo "Installing git ...................."
+sudo apt-get -y update
+sudo apt-get -y install git
+
+# Install docker
+echo "Installing docker ................."
+sudo wget -O install_docker.sh https://raw.github.com/ozzann/my-vagrant/master/install_docker.sh
+sudo ./install_docker.sh
 
 # Install Jenkins
-if ps aux | grep "pjenkins" | grep -v grep 2> /dev/null
+if ps aux | grep "jenkins" | grep -v grep 2> /dev/null
 then
     echo "Jenkins is already installed. Exiting..."
 else
