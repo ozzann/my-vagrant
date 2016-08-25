@@ -25,5 +25,8 @@ else
     sudo puppet module install puppetlabs-ntp
     sudo puppet module install garethr-docker
     sudo puppet module install puppetlabs-vcsrepo
- 
+
+    sudo usermod -a -G puppet vagrant
+    sudo chgrp puppet -R /etc/puppet
+    sudo chmod g+w -R /etc/puppet 
 fi
