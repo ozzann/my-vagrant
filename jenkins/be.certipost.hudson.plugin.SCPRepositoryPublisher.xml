@@ -4,8 +4,8 @@
     <be.certipost.hudson.plugin.SCPSite>
       <hostname>192.168.56.105</hostname>
       <port>22</port>
-      <username>root</username>
-      <password>12ankamaster</password>
+      <username>vagrant</username>
+      <password>vagrant</password>
       <keyfile></keyfile>
       <rootRepositoryPath>/etc/puppet</rootRepositoryPath>
     </be.certipost.hudson.plugin.SCPSite>
