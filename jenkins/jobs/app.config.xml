@@ -54,12 +54,6 @@
         <completeBuild>true</completeBuild>
       </threshold>
     </hudson.tasks.BuildTrigger>
-    <com.cloudbees.jenkins.GitHubCommitNotifier plugin="github@1.21.0">
-      <statusMessage>
-        <content></content>
-      </statusMessage>
-      <resultOnFailure>FAILURE</resultOnFailure>
-    </com.cloudbees.jenkins.GitHubCommitNotifier>
   </publishers>
   <buildWrappers/>
 </project>
