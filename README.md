@@ -4,9 +4,9 @@ This project contains Vagrant file which creates an environment
 and some shell scripts and required configuration files.
 
 Vagrant creates three virtual machine:
-   -- jenkins.server.vm with Jenkins installed
-   -- puppet.master.vm which manages Production VM by Puppet
-   -- production.puppet.node.vm - endpoint of the pipeline where the application should be deployed
+    -- jenkins.server.vm with Jenkins installed
+    -- puppet.master.vm which manages Production VM by Puppet
+    -- production.puppet.node.vm - endpoint of the pipeline where the application should be deployed
 
 
 
