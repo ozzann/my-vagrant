@@ -47,12 +47,12 @@
       <entries>
         <be.certipost.hudson.plugin.Entry>
           <filePath></filePath>
-          <sourceFile>**/manifests/</sourceFile>
+          <sourceFile>manifests/</sourceFile>
           <keepHierarchy>true</keepHierarchy>
         </be.certipost.hudson.plugin.Entry>
         <be.certipost.hudson.plugin.Entry>
           <filePath></filePath>
-          <sourceFile>**/modules/*/</sourceFile>
+          <sourceFile>modules/*/</sourceFile>
           <keepHierarchy>true</keepHierarchy>
         </be.certipost.hudson.plugin.Entry>
       </entries>
