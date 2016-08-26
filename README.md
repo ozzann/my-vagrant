@@ -15,8 +15,9 @@ one should synchronize puppet master and puppet node by running:
 
     puppet cert sign --all     # sign all certificates at puppet.master
  
-    puppet agent -t    # run agent to apply puppet manifests at production.puppet.node.vm
-
+    puppet agent -t 300   # run agent to apply puppet manifests at production.puppet.node.vm
+                          # the command is run with timeout 300 seconds because first run is quite a long process
+                          # because of pulling heavy "mono" docker image. It takes some time 
 
 
 In order to check if everything is set up correct, one should call curl command:
