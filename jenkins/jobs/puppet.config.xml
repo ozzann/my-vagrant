@@ -43,7 +43,7 @@
   <builders/>
   <publishers>
     <be.certipost.hudson.plugin.SCPRepositoryPublisher plugin="scp@1.8">
-      <siteName>192.168.56.103</siteName>
+      <siteName>192.168.56.105</siteName>
       <entries>
         <be.certipost.hudson.plugin.Entry>
           <filePath></filePath>
