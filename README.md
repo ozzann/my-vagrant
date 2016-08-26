@@ -10,7 +10,8 @@ one should synchronize puppet master and puppet node by running:
   
     puppet agent -t     # run puppet agent at production.puppet.node.vm
 
-    puppet cert list --all     # at puppet.master.vm to reassure there is a certificate for 'production.puppet.node.vm'
+    puppet cert list --all     # at puppet.master.vm to reassure there is a certificate 
+                                 for 'production.puppet.node.vm'
 
     puppet cert sign --all     # sign all certificates at puppet.master
  
