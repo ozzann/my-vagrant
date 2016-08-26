@@ -1,6 +1,16 @@
 # my-vagrant
 
-To set up the environments just run command:
+This project contains Vagrant file which creates an environment
+and some shell scripts and required configuration files.
+
+Vagrant creates three virtual machine:
+   -- jenkins.server.vm with Jenkins installed
+   -- puppet.master.vm which manages Production VM by Puppet
+   -- production.puppet.node.vm - endpoint of the pipeline where the application should be deployed
+
+
+
+To set up the environment just run a command:
       
       vagrant up
 
