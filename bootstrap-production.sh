@@ -20,7 +20,7 @@ else
     echo "" | sudo tee --append /etc/hosts 2> /dev/null && \
     echo "# Host config for Puppet Master and Agent Nodes" | sudo tee --append /etc/hosts 2> /dev/null
     echo "192.168.56.105    puppet.master.vm" | sudo tee --append /etc/hosts 2> /dev/null
-    echo "192.168.32.106    production.puppet.node.vm" | sudo tee --append /etc/hosts 2> /dev/null
+    echo "192.168.56.106    production.puppet.node.vm" | sudo tee --append /etc/hosts 2> /dev/null
     sudo sed -i 's/127\.0\.0\.1.*/&\tproduction.puppet.node.vm/' /etc/hosts
  
     # Add agent section to /etc/puppet/puppet.conf
