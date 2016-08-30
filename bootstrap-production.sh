@@ -1,4 +1,11 @@
-#!/bin/sh
+#!/bin/bash
+
+
+sudo service network-manager stop
+sudo ifdown eth1
+sudo ifup eth1
+sudo service network-manager start
+
  
 if ps aux | grep "puppet agent" | grep -v grep 2> /dev/null
 then
@@ -17,10 +24,24 @@ else
     sudo puppet resource service puppet ensure=running enable=true
  
     # Configure /etc/hosts file
-    echo "" | sudo tee --append /etc/hosts 2> /dev/null && \
     echo "# Host config for Puppet Master and Agent Nodes" | sudo tee --append /etc/hosts 2> /dev/null
-    echo "192.168.56.105    puppet.master.vm" | sudo tee --append /etc/hosts 2> /dev/null
-    echo "192.168.56.106    production.puppet.node.vm" | sudo tee --append /etc/hosts 2> /dev/null
+    
+    # Install jq to parse nodes json file
+    sudo apt-get install -y jq
+    
+    length=$(jq <"nodes.json" '.nodes."production.puppet.node.vm".":links" | length')
+
+    for (( i=0; i<$length; i++ ))
+    do
+
+        ip=$(jq <"nodes.json" --arg index $i '.nodes."production.puppet.node.vm".":links"[$index|tonumber].":ip"')
+
+        hostname=$(jq <"nodes.json" --arg index $i '.nodes."production.puppet.node.vm".":links"[$index|tonumber].":hostname"')
+
+        host=$("$ip $hostname" | sed 's/"//g')
+
+        echo "$host" | sudo tee --append /etc/hosts 2> /dev/null
+    done
     sudo sed -i 's/127\.0\.0\.1.*/&\tproduction.puppet.node.vm/' /etc/hosts
  
     # Add agent section to /etc/puppet/puppet.conf

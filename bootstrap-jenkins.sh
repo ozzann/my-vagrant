@@ -1,5 +1,11 @@
 #!/bin/bash
 
+sudo service network-manager stop
+sudo ifdown eth1
+sudo ifup eth1
+sudo service network-manager start
+
+
 restart_jenkins(){
     sudo /etc/init.d/jenkins restart
 
@@ -15,16 +21,15 @@ sudo apt-get -y install git
 
 # Install docker
 echo "Installing docker ......................................................................."
-sudo wget -O install_docker.sh https://raw.github.com/ozzann/my-vagrant/master/install_docker.sh
+sudo cp /vagrant/install_docker.sh install_docker.sh
 sudo chmod +x install_docker.sh
 sudo ./install_docker.sh
 
-# Download docker mono image in advance
+# Pull a Mono docker image in advance
 # otherwice it does timeout Jenkins app job's build
 echo "Download mono image ....................................................................."
-sudo mkdir mono-docker
-echo "FROM mono" > mono-docker/Dockerfile
-sudo docker build -t mono mono-docker/
+docker pull mono
+
 
 # Install Jenkins
 if ps aux | grep "jenkins" | grep -v grep 2> /dev/null
@@ -41,7 +46,8 @@ fi
 
 # Setting Jenkins config
 echo "Setting Jenkins config ..................................................................... "
-sudo wget -O /var/lib/jenkins/config.xml https://raw.github.com/ozzann/my-vagrant/master/jenkins/config.xml
+#sudo wget -O /var/lib/jenkins/config.xml https://raw.github.com/ozzann/my-vagrant/master/jenkins/config.xml
+sudo cp /vagrant/jenkins/config.xml /var/lib/jenkins/config.xml
 
 JENKINSVERSION=$(cat /var/lib/jenkins/config.xml | grep version\>.*\<\/version | grep -o [0-9\.]*)
 echo $JENKINSVERSION >> /var/lib/jenkins/jenkins.install.UpgradeWizard.state
@@ -60,13 +66,15 @@ echo "Installing Jenkins plugins ...............................................
 
 echo "Installing Github and SCP plugins and its dependencies ........................................ "
 # Download file containing list of required Jenkins plugins
-sudo wget -O plugins-list https://raw.github.com/ozzann/my-vagrant/master/plugins-list
+#sudo wget -O plugins-list https://raw.github.com/ozzann/my-vagrant/master/plugins-list
 
 while read line           
 do
     PLUGINNAME=$line
-    sudo wget http://mirrors.jenkins-ci.org/plugins/$PLUGINNAME/latest/$PLUGINNAME.hpi -P /var/lib/jenkins/plugins/
+    sudo wget http://mirrors.jenkins-ci.org/plugins/$PLUGINNAME/latest/$PLUGINNAME.hpi -P /va/jenkins/plugins/
 done <plugins-list
+
+restart_jenkins
 
 sudo wget -O /var/lib/jenkins/be.certipost.hudson.plugin.SCPRepositoryPublisher.xml https://raw.github.com/ozzann/my-vagrant/master/jenkins/be.certipost.hudson.plugin.SCPRepositoryPublisher.xml
 
