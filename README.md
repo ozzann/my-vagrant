@@ -102,6 +102,16 @@ or ping a server from any other VM using its IP address:
    
 ### Puppet
 
+   With Puppet, one can define the state of an IT infrastructure, and Puppet automatically enforces the desired state. Puppet automates every step of the software delivery process, from provisioning of physical and virtual machines to orchestration and reporting; from early-stage code development through testing, production release and updates.
+   
+   In this case Puppet installs docker to the production, then it copies application's source code inluding Dockerfile to the production and after that it runs deployment script. 
+   
+   In order to store app's file and then send them to the production, Puppet master has a statisc moin point **/etc/puppet/files**. Creation of this point is managed by **/etc/puppet/fileserver.conf** configuration file.
+   
+
+## What Vagrant does
+
+
 
 
 
