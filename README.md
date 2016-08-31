@@ -6,9 +6,6 @@ The goal of this Vagrant file is to create a simplified real environment, includ
 
 The Vagrantfile creates three virtual machines. One of them is for Jenkins Server. Also because the production should be managed by Puppet, there are also Puppet Master VM and Production VM is a Puppet Agent at the same time. All of the machines are Ubuntu Desktop 14.04 based development boxes.
 
-This project contains Vagrant file which creates an environment
-and some shell scripts and required configuration files.
-
 
 ## Prerequisites
 
@@ -86,6 +83,8 @@ or ping a server from any other VM using its IP address:
 
    
 ### Jenkins
+
+   
    
    
 ### Puppet
