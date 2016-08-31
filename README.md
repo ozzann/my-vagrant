@@ -9,9 +9,11 @@ The Vagrantfile creates three virtual machines. One of them is for Jenkins Serve
 This project contains Vagrant file which creates an environment
 and some shell scripts and required configuration files.
 
+
 ## Prerequisites
 
 In order to provision this system one has to have only Vagrant and VirtualBox installed.
+
 
 ## Usage
 
@@ -51,6 +53,8 @@ or ping a server from any other VM using its IP address:
     curl 192.168.56.106:9000
     
     
+    
+    
 ## What's inside
 
 ### GitHub repositories
@@ -69,6 +73,16 @@ or ping a server from any other VM using its IP address:
    
    Docker is the open platform to build, ship and run applications, anywhere. Any application wrapped into a Docker container can be run on any environment because it’d contain all essential things: code, system tools, system libraries, runtime. It makes Docker very powerful tool for Continuous Deployment.
    
+   Docker file used in this project makes C# app runnable on any environment. In order to do this Docker file pulls Mono docker image and .. that's all :) Also it exposes 9000 port, because the app is using it. So, the Docker file is very simple:
+   
+   		FROM mono
+		ADD . /usr/src/app
+      	WORKDIR /usr/src/app
+      	RUN mcs SimplePingServer/Program.cs
+
+      	EXPOSE 9000
+      	CMD [ "mono", "SimplePingServer/Program.exe" ]
+    
 
    
 ### Jenkins
