@@ -53,7 +53,7 @@ or ping a server from any other VM using its IP address:
     
 ## What's inside
 
-   ### GitHub repositories
+### GitHub repositories
    
    There are three GitHub repos take part in the whole process.
    
@@ -65,15 +65,16 @@ or ping a server from any other VM using its IP address:
    The third part in the process is this repository containing Vagrant file and some scripts, and configuration files. 
    
 
-   ### Docker
+### Docker
    
    Docker is the open platform to build, ship and run applications, anywhere. Any application wrapped into a Docker container can be run on any environment because it’d contain all essential things: code, system tools, system libraries, runtime. It makes Docker very powerful tool for Continuous Deployment.
    
 
    
-   ### Jenkins
+### Jenkins
    
-   ### Puppet
+   
+### Puppet
 
 
 
