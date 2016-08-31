@@ -53,6 +53,29 @@ or ping a server from any other VM using its IP address:
     
 ## What's inside
 
+   ### GitHub repositories
+   
+   There are three GitHub repos take part in the whole process.
+   
+   First and foremost is [C# Ping server app](https://github.com/ozzann/basic-ping-server). It containes C# source code, some tests which will be run on Jenkins and a Docker file.
+   The good test for the app like this is just call a curl command checking a response from a server. So, the tests are bash scripts which run a Docker container and then curl the server.
+   
+   Puppet manifests have a special [repository](https://github.com/ozzann/my-puppet). A configuration of production puppet node is described by a puppet module called **production**. Also the puppet repo containes main manifest with description of all nodes. In our case there is just one node for production.
+
+   The third part in the process is this repository containing Vagrant file and some scripts, and configuration files. 
+   
+
+   ### Docker
+   
+   Docker is the open platform to build, ship and run applications, anywhere. Any application wrapped into a Docker container can be run on any environment because it’d contain all essential things: code, system tools, system libraries, runtime. It makes Docker very powerful tool for Continuous Deployment.
+   
+
+   
+   ### Jenkins
+   
+   ### Puppet
+
+
 
 
 
