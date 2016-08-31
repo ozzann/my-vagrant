@@ -26,18 +26,18 @@ else
 
     sudo cp /vagrant/nodes.json nodes.json
 
-    length=$(jq <"nodes.json" '.nodes."puppet.master.vm".":links" | length')
+    length=$(jq <"nodes.json" '.nodes["puppet.master.vm"][":links"] | length')
 
     for (( i=0; i<$length; i++ ))
     do
 
-        ip=$(jq <"nodes.json" --arg index $i '.nodes."puppet.master.vm".":links"[$index|tonumber].":ip"')
+        ip=$(jq <"nodes.json" --arg index $i '.nodes["puppet.master.vm"][":links"][$index|tonumber][":ip"]')
 
-        hostname=$(jq <"nodes.json" --arg index $i '.nodes."puppet.master.vm".":links"[$index|tonumber].":hostname"')
+        hostname=$(jq <"nodes.json" --arg index $i '.nodes["puppet.master.vm"][":links"][$index|tonumber][":hostname"]')
     
         host=$(echo "$ip $hostname" | sed 's/"//g')
 
-        echo "$host" >> /etc/hosts
+        sudo echo "$host" >> /etc/hosts
     done
     
     sudo sed -i 's/127\.0\.0\.1.*/&\tpuppet.master.vm/' /etc/hosts
