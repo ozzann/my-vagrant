@@ -85,9 +85,13 @@ or ping a server from any other VM using its IP address:
 ### Jenkins
 
    Jenkins is a powerful for Continuous Integration. It allows run tests almost immediately after commiting changes. Moreover, Jenkins has just a huge set of different plugins for any purpose you'd like.
+   
    In this case Jenkins is bound to GitHub repositories by using just one plugin called **GitHub Plugin.** 
+   
    There are two ways to detect commits and then run jobs: polling SCM and set GitHub webhook so after every commit Jenkins build could run immediately. In our case polling SCM is chosen, it's scheduled to poll GitHub repo every 5 minutes.
+   
    There two jobs in Jenkins: app job is for running C# app's test and puppet job is responsible for continuous integration of puppet project. Both of these jobs are bound to corresponding GitHub repositories. Moreover, they're bound between each other.
+   
    App job has two post-build actions which run only after stable, or succesfull builds. Firstly other project puppet will be run. It should be mentioned that successfull running of application depends on server's configuration which puppet scripts provide. So without successfull build of puppet project there is no sense to deploy the application to production.
    Then Jenkins copies application files to Puppet master with another Jenkins plugin **Hudson SCP publisher plugin.**
    
