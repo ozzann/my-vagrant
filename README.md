@@ -1,14 +1,17 @@
-# my-vagrant
+## Vagrant to provision a CI pipeline with Docker, Jenkins and Puppet
+
+This repo contains Vagrantfile and bootstrap shell scripts, and some configs required for all VMs to set up correctly. 
+
+The goal of this Vagrant file is to create a simplified real environment, including Jenkins server for CI and a production server. More detailed, it should put together a pipeline from a GitHub repository through a Jenkins build to deploy an application running in a Docker container, with a redeployment every time a change is checked in that builds and tests correctly. The application deployed at the production is a simple C# network application. It listens on a port and send back "Hello, world!" message.
+
+The Vagrantfile creates three virtual machines. One of them is for Jenkins Server. Also because the production should be managed by Puppet, there are also Puppet Master VM and Production VM is a Puppet Agent at the same time. All of the machines are Ubuntu Desktop 14.04 based development boxes.
 
 This project contains Vagrant file which creates an environment
 and some shell scripts and required configuration files.
 
-Vagrant creates three virtual machine:
-    -- jenkins.server.vm with Jenkins installed
-    -- puppet.master.vm which manages Production VM by Puppet
-    -- production.puppet.node.vm - endpoint of the pipeline where the application should be deployed
+## Prerequisites
 
-
+## Usage
 
 To set up the environment just run a command:
       
@@ -30,6 +33,7 @@ one should synchronize puppet master and puppet node by running:
     sudo puppet agent -t     # run agent to apply puppet manifests at production.puppet.node.vm
 
 
+As a result 
 In order to check if everything is set up correct, one should call curl command:
 
     curl http://localhost:9000    # at production.puppet.node.vm
