@@ -15,31 +15,44 @@ In order to provision this system one has to have only Vagrant and VirtualBox in
 
 ## Usage
 
-To set up the environment just run a command:
+
+After cloning this directory to set up the environment run a command:
       
       vagrant up
 
 
-Then after all virtual machines have set up, 
-one should synchronize puppet master and puppet node by running:
+Then after all VMs had successfully set up, one should build Jenkins 'app' job and after that synchronize Puppet master and Puppet Client manually by running these commands:
+
+  - run puppet agent at production.puppet.node.vm
+    
+    	sudo puppet agent -t
+
+  - at puppet.master.vm to reassure there is a certificate for 'production.puppet.node.vm'
+    
+    	sudo puppet cert list --all     
+
+  - sign all certificates at puppet.master including just created certificate from 'production.puppet.node.vm'
   
-    sudo puppet agent -t     # run puppet agent at production.puppet.node.vm
-
-    sudo puppet cert list --all     # at puppet.master.vm to reassure there is a certificate 
-                               #  for 'production.puppet.node.vm'
-
-    sudo puppet cert sign --all     # sign all certificates at puppet.master
-                               # including just created certificate 
-                               # from 'production.puppet.node.vm'
- 
-    sudo puppet agent -t     # run agent to apply puppet manifests at production.puppet.node.vm
+    	sudo puppet cert sign --all
+        
+  - run agent to apply puppet manifests at 'production.puppet.node.vm'
+  
+    	sudo puppet agent -t
 
 
-As a result 
-In order to check if everything is set up correct, one should call curl command:
+As a result three virtual machines: **jenkins.server.vm, puppet.master.vm, production.puppet.node.vm** should be running.
 
-    curl http://localhost:9000    # at production.puppet.node.vm
+In order to check if everything is set up correct call curl command at 'production.puppet.node':
 
-or
+    curl localhost:9000
 
-    curl 192.168.56.106:9000    # at any other virtual machine. This IP address is production VM's IP.
+or ping a server from any other VM using its IP address:
+
+    curl 192.168.56.106:9000
+    
+    
+## What's inside
+
+
+
+
