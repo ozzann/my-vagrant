@@ -24,6 +24,8 @@ else
     # Install jq to parse nodes json file
     sudo apt-get install -y jq
 
+    sudo cp /vagrant/nodes.json nodes.json
+
     length=$(jq <"nodes.json" '.nodes."puppet.master.vm".":links" | length')
 
     for (( i=0; i<$length; i++ ))
