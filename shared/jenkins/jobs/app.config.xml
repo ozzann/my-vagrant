@@ -54,6 +54,22 @@
         <completeBuild>true</completeBuild>
       </threshold>
     </hudson.tasks.BuildTrigger>
+    <be.certipost.hudson.plugin.SCPRepositoryPublisher plugin="scp@1.8">
+      <siteName>192.168.56.103</siteName>
+      <entries>
+        <be.certipost.hudson.plugin.Entry>
+          <filePath>../../home/vagrant/app</filePath>
+          <sourceFile>**</sourceFile>
+          <keepHierarchy>true</keepHierarchy>
+        </be.certipost.hudson.plugin.Entry>
+      </entries>
+    </be.certipost.hudson.plugin.SCPRepositoryPublisher>
+    <com.cloudbees.jenkins.GitHubCommitNotifier plugin="github@1.21.0">
+      <statusMessage>
+        <content></content>
+      </statusMessage>
+      <resultOnFailure>FAILURE</resultOnFailure>
+    </com.cloudbees.jenkins.GitHubCommitNotifier>
   </publishers>
   <buildWrappers/>
 </project>
