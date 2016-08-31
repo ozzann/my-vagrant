@@ -33,9 +33,9 @@ else
 
         hostname=$(jq <"nodes.json" --arg index $i '.nodes."puppet.master.vm".":links"[$index|tonumber].":hostname"')
     
-        host=$("$ip $hostname" | sed 's/"//g')
+        host=$(echo "$ip $hostname" | sed 's/"//g')
 
-        echo "$host" | sudo tee --append /etc/hosts 2> /dev/null
+        echo "$host" >> /etc/hosts
     done
     
     sudo sed -i 's/127\.0\.0\.1.*/&\tpuppet.master.vm/' /etc/hosts
