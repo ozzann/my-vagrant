@@ -11,6 +11,8 @@ and some shell scripts and required configuration files.
 
 ## Prerequisites
 
+In order to provision this system one has to have only Vagrant and VirtualBox installed.
+
 ## Usage
 
 To set up the environment just run a command:
