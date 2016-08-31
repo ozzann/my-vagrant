@@ -58,7 +58,7 @@
       <siteName>192.168.56.105</siteName>
       <entries>
         <be.certipost.hudson.plugin.Entry>
-          <filePath>../../home/vagrant/app</filePath>
+          <filePath>files/app/</filePath>
           <sourceFile>**</sourceFile>
           <keepHierarchy>true</keepHierarchy>
         </be.certipost.hudson.plugin.Entry>

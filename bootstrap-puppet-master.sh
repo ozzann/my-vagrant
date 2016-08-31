@@ -51,6 +51,13 @@ else
     sudo puppet module install garethr-docker
     sudo puppet module install puppetlabs-vcsrepo
 
+    # Create a static mount point
+    sudo sed -i 's/#\s*\[extra_files\]/\[extra_files\]/' /etc/puppet/fileserver.conf 
+    sudo sed -i 's/#\s*path \/etc\/puppet\/files/path \/etc\/puppet\/files/' /etc/puppet/fileserver.conf 
+    sudo sed -i 's/#\s*allow \*/allow \*/' /etc/puppet/fileserver.conf 
+
+    sudo mkdir /etc/puppet/files
+
     sudo usermod -a -G puppet vagrant
     sudo chgrp puppet -R /etc/puppet
     sudo chmod g+w -R /etc/puppet 
