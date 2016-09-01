@@ -57,12 +57,12 @@ or ping a server from any other VM using production VM's IP address:
 
 ### GitHub repositories
    
-   There are three GitHub repos taking part in the whole process.
+   There are three GitHub repos taking part in the pipeline.
    
    First and foremost is [C# Ping server app](https://github.com/ozzann/basic-ping-server). It contains C# source code and some tests which should be run at Jenkins, and a Docker file.
    The good test for the app is just call a curl command to check a response from a server. So, the tests are bash scripts which run a Docker container and then curl the server.
    
-   Puppet manifests have a separate [repository](https://github.com/ozzann/my-puppet). A configuration of production VM is described in a puppet module called **production**. Also the puppet repo contains main manifest with description of all nodes. In our case there are just one node for production and one node is default:
+   Puppet manifests have a separate [repository](https://github.com/ozzann/my-puppet). A configuration of the production VM is described in a puppet module called **production**. Also the puppet repo contains main manifest with description of all nodes. In our case there are just one node for production and one node is default:
    	
     	node default {
         }
@@ -73,14 +73,14 @@ or ping a server from any other VM using production VM's IP address:
         }
 
 
-   The third part in the process is this repository containing Vagrant file and some scripts, and configuration files. 
+   The third part in the process is this repository containing Vagrant file and provisioning scripts, and configuration files. 
    
 
 ### Docker
    
    Docker is the open platform to build, ship and run applications, anywhere. Any application wrapped into a Docker container can be run on any environment because it’d contain all essential things: code, system tools, system libraries, runtime. It makes Docker very powerful tool for Continuous Deployment.
    
-   Docker file used in this project makes C# app runnable on any environment. In order to do this Docker file pulls Mono docker image and runs the app. That's it :) Also it exposes 9000 port, because the app is using it. So, the Docker file is very simple:
+   Docker file used in this project makes C# app runnable on any environment. In order to do this Docker file pulls Mono docker image and runs the app. That's it :) Also it exposes 9000 port, because the app uses it. So, the Docker file is very simple:
    
    		FROM mono
 		ADD . /usr/src/app
@@ -94,7 +94,7 @@ or ping a server from any other VM using production VM's IP address:
    
 ### Jenkins
 
-   Jenkins is a powerful for Continuous Integration. It allows you run tests almost immediately after commiting changes. Moreover, Jenkins has just a huge set of different plugins for any purpose.
+   Jenkins is a powerful tool for Continuous Integration. It allows you run tests almost immediately after commiting changes. Moreover, Jenkins has just a huge set of different plugins for any purpose.
    
    In this case Jenkins is bound to GitHub repositories by using just one plugin called **GitHub Plugin.** 
    
@@ -104,12 +104,12 @@ or ping a server from any other VM using production VM's IP address:
    
    There are two jobs in Jenkins: 'app' job is for running C# app's test and puppet job is responsible for continuous integration of the 'puppet' project. Both of these jobs are bound to corresponding GitHub repositories. 
    
-   'App' job has two post-build actions which run only after stable builds. The first action is to build 'puppet' job. It is necessary because successfull running of the application depends on server's configuration which puppet manifests provide. So without successfull build of 'puppet' project there is no sense to deploy the application to production.
+   'App' job has two post-build actions which run only after stable builds. The first action is to build 'puppet' job. It is necessary because successfull running of the application depends on server's configuration which puppet manifests provide. So without stable build of 'puppet' project there is no sense to deploy the application to production.
    Then Jenkins copies application files to Puppet master via SCP by using another Jenkins plugin **Hudson SCP publisher plugin.**
    
    Docker does already provide a useful tool for deploying any application, it does already contain everything necessary for deployment, so there is no need to use other tools and therefore it's enough just send a source code and a Dockerfile to production.
    
-   So far there are no tests for puppet manifests. But after succesfull build of 'puppet' job Jenkins copies last version of puppet project to the Puppet master by using Jenkins plugin **Hudson SCP publisher plugin.**
+   So far there are no tests for puppet manifests, so every 'puppet' build is stable. After that Jenkins copies last version of puppet project to the Puppet master by using Jenkins plugin **Hudson SCP publisher plugin.**
    
    
 ### Puppet
@@ -148,6 +148,8 @@ or ping a server from any other VM using production VM's IP address:
    
    Because puppet master sends application's files to puppet agent, a static mount point is configured. It is managed in another puppet config file **/etc/puppet/fileserver.conf**.
    
+   In order not to hardcode Puppet Master's and Puppet Agent's IPs, the description of the Puppet Master in **nodes.json** contains a reference to Puppet Agent.
+   
    
    - **bootstrap-production.sh**
    
@@ -156,12 +158,14 @@ or ping a server from any other VM using production VM's IP address:
    
    		server=puppet.master.vm
     	certname=production.puppet.node.vm
+        
+   In order not to hardcode Puppet Master's and Puppet Agent's IPs, the description of the Production puppet node in **nodes.json** contains a reference to Puppet Master.
     
 
    - **bootstrap-jenkins.sh**
    
    In the beginning the script installs git and docker packages. Then it pulls Mono docker image because it's quite heavy and while running tests it could result in timeout error. 
-   Second step is to install Jenkins. The script uses files from shared folder, particularly Jenkins global config file, config files for each of the jobs and file containing list of all required plugins and its dependencies. In order to create all jobs and install all neccessray plugins, Jenkins command line tool is used, like this:
+   Second step is to install Jenkins. The script uses files from shared folder, particularly Jenkins global config file, config files for each of the jobs and the file containing list of all required plugins and its dependencies. In order to create all jobs and install all neccessray plugins, Jenkins command line tool is used, like this:
    
    		sudo java -jar jenkins-cli.jar -s http://localhost:8080/ create-job puppet < puppet.config.xml
         
