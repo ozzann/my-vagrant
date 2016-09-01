@@ -107,7 +107,7 @@ or ping a server from any other VM using production VM's IP address:
    'App' job has two post-build actions which run only after stable builds. The first action is to build 'puppet' job. It is necessary because successfull running of the application depends on server's configuration which puppet manifests provide. So without stable build of 'puppet' project there is no sense to deploy the application to production.
    Then Jenkins copies application files to Puppet master via SCP by using another Jenkins plugin **Hudson SCP publisher plugin.**
    
-   Docker does already provide a useful tool for deploying any application, it does already contain everything necessary for deployment, so there is no need to use other tools and therefore it's enough just send a source code and a Dockerfile to production.
+   Docker does already provide a useful tool for deploying any application, everything necessary for deployment is already embedded in a docker container, so there is no need to use other tools and therefore it's enough just send a source code and a Dockerfile to production.
    
    So far there are no tests for puppet manifests, so every 'puppet' build is stable. After that Jenkins copies last version of puppet project to the Puppet master by using Jenkins plugin **Hudson SCP publisher plugin.**
    
