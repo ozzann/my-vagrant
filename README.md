@@ -114,10 +114,17 @@ or ping a server from any other VM using its IP address:
    
 ### The pipeline in action
    
-   1) Jenkins build 'app' job and run tests for C# pinge server application
-   2) If a build is table, then build other job for 'puppet' project and application source code is copied to Puppet Master VM by SCP.
-   3) If 'puppet' build is stable, then all puppet manifests are copied to puppet master.
-   4) 
+  1. Developer pushes change to GitHub repo.
+  2. Jenkins polls SCM and if it finds any changes it builds 'app' job.
+  3. If a build is succsefull, then another 'puppet' job is built and also Jenkins copies application's source code files to the Puppet Master VM by SCP.
+  4. If the next build for 'puppet' project is stable, then all puppet manifests are copied to Puppet Master VM by SCP as well.
+  5. Now all actions required to deploy the app to Production VM are described in puppet manifests and in order to apply all these changes to production one has just to sync Puppet Master and Agent by running command
+  	
+    		puppet agent -t
+            
+  Now the application is running in a docker container at the Production VM.
+
+   
    
    
 
