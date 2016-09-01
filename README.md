@@ -51,6 +51,7 @@ or ping a server from any other VM using its IP address:
     
     
     
+ 
     
 ## What's inside and how it works
 
@@ -113,7 +114,10 @@ or ping a server from any other VM using its IP address:
    
 ### The pipeline in action
    
-   1) 
+   1) Jenkins build 'app' job and run tests for C# pinge server application
+   2) If a build is table, then build other job for 'puppet' project and application source code is copied to Puppet Master VM by SCP.
+   3) If 'puppet' build is stable, then all puppet manifests are copied to puppet master.
+   4) 
    
    
 
