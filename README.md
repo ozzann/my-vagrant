@@ -9,7 +9,7 @@ The Vagrantfile creates three virtual machines. One of them is for Jenkins Serve
 
 ## Prerequisites
 
-In order to provision this system one has to have only Vagrant and VirtualBox installed.
+In order to provision this system one has to have only [Vagrant](https://www.vagrantup.com/downloads.html) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed.
 
 
 ## Usage
@@ -88,7 +88,9 @@ or ping a server from any other VM using its IP address:
    
    In this case Jenkins is bound to GitHub repositories by using just one plugin called **GitHub Plugin.** 
    
-   There are two ways to detect commits and then run jobs: polling SCM and set GitHub webhook so after every commit Jenkins build could run immediately. In our case polling SCM is chosen, it's scheduled to poll GitHub repo every 5 minutes.
+   There are two ways to detect commits and then run jobs: polling SCM and set GitHub webhook so after every commit Jenkins build could run immediately. In our case polling SCM is chosen, it's scheduled to poll GitHub repo every 5 minutes:
+   
+   	H/5 * * * *
    
    There two jobs in Jenkins: app job is for running C# app's test and puppet job is responsible for continuous integration of puppet project. Both of these jobs are bound to corresponding GitHub repositories. Moreover, they're bound between each other.
    
@@ -106,21 +108,33 @@ or ping a server from any other VM using its IP address:
    
    In this case Puppet installs docker to the production, then it copies application's source code inluding Dockerfile to the production and after that it runs deployment script. 
    
-   In order to store app's file and then send them to the production, Puppet master has a statisc moin point **/etc/puppet/files**. Creation of this point is managed by **/etc/puppet/fileserver.conf** configuration file.
+   In order to store app's file and then send them to the production, Puppet master has a static mount point **/etc/puppet/files**. Creation of this point is managed by **/etc/puppet/fileserver.conf** configuration file.
    
    
 ### The pipeline in action
    
    
+   
 
 ## What Vagrant does
 
-Firstly Vagrant creates three virtual machines. All of them are based on Ubuntu 14.04 Desktop OS and have descriptive names. Also, each of them is assigned with specisific IP address, because they need to communicate between each other. This is obviously not enought to build VMs required fot the pipeline, but Vagrant allows us to install any packages and configure a system by provisioners. In this case shell scripts for each of VM is used:
+   Firstly Vagrant creates three virtual machines. The information about machines' names, IPs and provisioning scripts is stored in JSON file **nodes.json**.
+   All of them are based on Ubuntu 14.04 Desktop OS and have descriptive names. Also, each of them is assigned with specisific IP address, because they need to communicate between each other. This is obviously not enought to build VMs required fot the pipeline, but Vagrant allows us to install any packages and configure a system by provisioners. In this case shell scripts for each of VM are used:
 
    - **bootstrap-puppet-master.sh**
    
+   The script installs puppetmaster to this machine. Beside that it also configure **/etc/hosts** file by adding information about puppet master and puppet agent hosts.
+   Also, some puppet modules, such as ntp, docker and vcsrepo, are installed. The docker module is used then in main puppet manifest site.pp.
+   Because puppet master sends application's files to puppet agent, a static mount point is configured. It is managed in another puppet config file **/etc/puppet/fileserver.conf** where the file source is set.
+   
    
    - **bootstrap-production.sh**
+   
+   The provision script for Production VM performs three tasks. Firstly, it installs puppet agent. Then it configures /etc/hosts file by adding information about Puppet Master host. Also it makes puppet config /etc/puppet/puppet.conf aware of the Puppet Master by adding server and certname parameters. Now puppet.conf should contain:
+   
+   	server=puppet.master.vm
+    certname=production.puppet.node.vm
+    
 
    - **bootstrap-jenkins.sh**
    
@@ -136,7 +150,5 @@ Firstly Vagrant creates three virtual machines. All of them are based on Ubuntu 
    Installed Jenkins plugins also have specific configuration with information about sCP servers and GitHub repositories described in **be.certipost.hudson.plugin.SCPRepositoryPublisher.xml** and **github-plugin-configuration.xml**
    
 
-
-The information about machines' names, IPs and provisioning scripts is stored in JSON file **nodes.json**.
 
 
