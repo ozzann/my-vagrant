@@ -123,16 +123,17 @@ Firstly Vagrant creates three virtual machines. All of them are based on Ubuntu 
    - **bootstrap-production.sh**
 
    - **bootstrap-jenkins.sh**
+   
    In the beginning the script installs git and docker packages. Then it pulls Mono docker image because it's quite heavy and while running tests it could result in timeout error. 
    Second step is to install Jenkins. The script uses files from shared folder, particularly Jenkins global config file, config files for each of jobs and plugins list file. In order to create all jobs and install all neccessray plugins, Jenkins command line tool is used, like this:
    
    	sudo java -jar jenkins-cli.jar -s http://localhost:8080/ create-job puppet < puppet.config.xml
 
-File **jenkins-cli.jar** should be preliminary downloaded from http://localhost:8080
+    File **jenkins-cli.jar** should be preliminary downloaded from http://localhost:8080
 
 	  sudo wget http://localhost:8080/jnlpJars/jenkins-cli.jar
 
-Installed Jenkins plugins also have specific configuration with information about sCP servers and GitHub repositories described in **be.certipost.hudson.plugin.SCPRepositoryPublisher.xml** and **github-plugin-configuration.xml**
+   Installed Jenkins plugins also have specific configuration with information about sCP servers and GitHub repositories described in **be.certipost.hudson.plugin.SCPRepositoryPublisher.xml** and **github-plugin-configuration.xml**
    
 
 
