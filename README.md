@@ -9,18 +9,18 @@ The Vagrantfile creates three virtual machines. One of them is for Jenkins Serve
 
 ## Prerequisites
 
-In order to provision this system one has to have only [Vagrant](https://www.vagrantup.com/downloads.html) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed.
+In order to provision this system you only have to have [Vagrant](https://www.vagrantup.com/downloads.html) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed.
 
 
 ## Usage
 
 
-After cloning this directory to set up the environment run a command:
+After cloning this directory, to set up the environment run a command:
       
       vagrant up
 
 
-Then after all VMs had successfully set up, one should build Jenkins 'app' job and after that synchronize Puppet master and Puppet Client manually by running these commands:
+Then after all VMs had successfully set up, you have to build Jenkins 'app' job and after that synchronize Puppet master and Puppet Client manually by running these commands:
 
   - run puppet agent at **production.puppet.node.vm**
     
@@ -59,10 +59,10 @@ or ping a server from any other VM using production VM's IP address:
    
    There are three GitHub repos taking part in the whole process.
    
-   First and foremost is [C# Ping server app](https://github.com/ozzann/basic-ping-server). It contains C# source code and some tests which will be run on Jenkins, and a Docker file.
-   The good test for the app like this is just call a curl command to check a response from a server. So, the tests are bash scripts which run a Docker container and then curl the server.
+   First and foremost is [C# Ping server app](https://github.com/ozzann/basic-ping-server). It contains C# source code and some tests which should be run at Jenkins, and a Docker file.
+   The good test for the app is just call a curl command to check a response from a server. So, the tests are bash scripts which run a Docker container and then curl the server.
    
-   Puppet manifests have a separate [repository](https://github.com/ozzann/my-puppet). A configuration of production VM is described in a puppet module called **production**. Also the puppet repo contains main manifest with description of all nodes. In our case there are just one node for production and one for default node:
+   Puppet manifests have a separate [repository](https://github.com/ozzann/my-puppet). A configuration of production VM is described in a puppet module called **production**. Also the puppet repo contains main manifest with description of all nodes. In our case there are just one node for production and one node is default:
    	
     	node default {
         }
@@ -80,7 +80,7 @@ or ping a server from any other VM using production VM's IP address:
    
    Docker is the open platform to build, ship and run applications, anywhere. Any application wrapped into a Docker container can be run on any environment because it’d contain all essential things: code, system tools, system libraries, runtime. It makes Docker very powerful tool for Continuous Deployment.
    
-   Docker file used in this project makes C# app runnable on any environment. In order to do this Docker file pulls Mono docker image and .. that's all :) Next, it just runs the app. Also it exposes 9000 port, because the app is using it. So, the Docker file is very simple:
+   Docker file used in this project makes C# app runnable on any environment. In order to do this Docker file pulls Mono docker image and runs the app. That's it :) Also it exposes 9000 port, because the app is using it. So, the Docker file is very simple:
    
    		FROM mono
 		ADD . /usr/src/app
@@ -94,29 +94,29 @@ or ping a server from any other VM using production VM's IP address:
    
 ### Jenkins
 
-   Jenkins is a powerful for Continuous Integration. It allows run tests almost immediately after commiting changes. Moreover, Jenkins has just a huge set of different plugins for any purpose you'd like.
+   Jenkins is a powerful for Continuous Integration. It allows you run tests almost immediately after commiting changes. Moreover, Jenkins has just a huge set of different plugins for any purpose.
    
    In this case Jenkins is bound to GitHub repositories by using just one plugin called **GitHub Plugin.** 
    
-   There are two ways to detect commits and then run jobs: polling SCM and set GitHub webhook so after every commit Jenkins build could run immediately. In our case polling SCM is chosen, it's scheduled to poll GitHub repo every 5 minutes:
+   There are two ways to detect commits and then run builds: polling SCM or set GitHub webhook so after every commit Jenkins build could run immediately. In our case polling SCM is chosen, it's scheduled to poll the GitHub repo every 5 minutes:
    
    	H/5 * * * *
    
-   There are two jobs in Jenkins: app job is for running C# app's test and puppet job is responsible for continuous integration of puppet project. Both of these jobs are bound to corresponding GitHub repositories. 
+   There are two jobs in Jenkins: 'app' job is for running C# app's test and puppet job is responsible for continuous integration of the 'puppet' project. Both of these jobs are bound to corresponding GitHub repositories. 
    
-   'App' job has two post-build actions which run only after stable, or succesfull builds. The first action is to build 'puppet' job. It is necessary because successfull running of application depends on server's configuration which puppet scripts provide. So without successfull build of 'puppet' project there is no sense to deploy the application to production.
-   Then Jenkins copies application files to Puppet master with another Jenkins plugin **Hudson SCP publisher plugin.**
+   'App' job has two post-build actions which run only after stable builds. The first action is to build 'puppet' job. It is necessary because successfull running of the application depends on server's configuration which puppet manifests provide. So without successfull build of 'puppet' project there is no sense to deploy the application to production.
+   Then Jenkins copies application files to Puppet master via SCP by using another Jenkins plugin **Hudson SCP publisher plugin.**
    
    Docker does already provide a useful tool for deploying any application, it does already contain everything necessary for deployment, so there is no need to use other tools and therefore it's enough just send a source code and a Dockerfile to production.
    
-   So far there are no tests for puppet manifests. But after succesfull build of puppet job Jenkins copies last version of puppet project to Puppet master by using Jenkins plugin **Hudson SCP publisher plugin.**
+   So far there are no tests for puppet manifests. But after succesfull build of 'puppet' job Jenkins copies last version of puppet project to the Puppet master by using Jenkins plugin **Hudson SCP publisher plugin.**
    
    
 ### Puppet
 
-   With Puppet, one can define the state of an IT infrastructure, and Puppet automatically enforces the desired state. Puppet automates every step of the software delivery process, from provisioning of physical and virtual machines to orchestration and reporting; from early-stage code development through testing, production release and updates.
+   With Puppet, you can define the state of an IT infrastructure, and Puppet automatically enforces the desired state. Puppet automates every step of the software delivery process, from provisioning of physical and virtual machines to orchestration and reporting; from early-stage code development through testing, production release and updates.
    
-   In this case Puppet installs docker to the production, then it copies application's source code inluding Dockerfile to the production and after that it runs deployment script. 
+   In this case Puppet installs docker to the production, then it copies the application's source code inluding Dockerfile to the production and after that it runs a deployment script. 
    
    In order to store app's file and then send them to the production, Puppet master has a static mount point **/etc/puppet/files**. Creation of this point is managed by **/etc/puppet/fileserver.conf** configuration file.
    
@@ -126,10 +126,8 @@ or ping a server from any other VM using production VM's IP address:
   1. Developer pushes changes to the [GitHub repo](https://github.com/ozzann/basic-ping-server).
   2. Jenkins polls SCM and if it finds any changes it builds 'app' job.
   3. If a build is succsefull, then another 'puppet' job is built and also Jenkins copies application's source code files to the Puppet Master VM by SCP.
-  4. If the build for 'puppet' project is stable, then all puppet manifests are copied to Puppet Master VM by SCP as well.
-  5. Now all actions required to deploy the app to Production VM are described in puppet manifests and in order to apply all these changes to production one has just to sync Puppet Master and Agent by running command
-  	
-    		puppet agent -t
+  4. If a build for 'puppet' project is stable, then all puppet manifests are copied to Puppet Master VM by SCP as well.
+  5. Now all actions required to deploy the app to the Production VM are described in puppet manifests and in order to apply all these changes to the production you have just to sync Puppet Master and Agent by running commands descript in the Usage section.
             
   Now the application is running in a docker container at the Production VM.
 
@@ -141,7 +139,7 @@ or ping a server from any other VM using production VM's IP address:
 
    Firstly Vagrant creates three virtual machines. The information about machines' names, IPs and provisioning scripts is stored in JSON file **nodes.json**.
    
-   All of them are based on Ubuntu 14.04 Desktop OS and have descriptive names. Also, each of them is assigned with specisific IP address, because they need to communicate between each other. This is obviously not enought to build VMs required fot the pipeline, so Vagrant allows us to install any packages and configure a system by provisioners. In this case shell scripts for each of VM are used:
+   All of them are based on Ubuntu 14.04 Desktop and have descriptive names. Also, each of them is assigned with specific IP address, because they need to communicate between each other. This is obviously not enought to build VMs required fot the pipeline, so Vagrant allows us to install any packages and configure a system by using provisioners. In this case shell scripts for each of VM are used:
 
    - **bootstrap-puppet-master.sh**
    
@@ -153,7 +151,8 @@ or ping a server from any other VM using production VM's IP address:
    
    - **bootstrap-production.sh**
    
-   The provision script for Production VM performs three tasks. Firstly, it installs puppet agent. Then it configures **/etc/hosts** file by adding information about Puppet Master host. Also it makes puppet config **/etc/puppet/puppet.conf** aware of the Puppet Master by adding server and certname parameters. Now puppet.conf should contain:
+   The provision script for Production VM performs three tasks. Firstly, it installs puppet agent. Then it configures **/etc/hosts** file by adding information about Puppet Master host. Also it makes puppet config **/etc/puppet/puppet.conf** aware of the Puppet Master by adding server and certname parameters. 
+   After that **/etc/puppet/puppet.conf** should contain:
    
    		server=puppet.master.vm
     	certname=production.puppet.node.vm
@@ -162,7 +161,7 @@ or ping a server from any other VM using production VM's IP address:
    - **bootstrap-jenkins.sh**
    
    In the beginning the script installs git and docker packages. Then it pulls Mono docker image because it's quite heavy and while running tests it could result in timeout error. 
-   Second step is to install Jenkins. The script uses files from shared folder, particularly Jenkins global config file, config files for each of the jobs and plugins list file. In order to create all jobs and install all neccessray plugins, Jenkins command line tool is used, like this:
+   Second step is to install Jenkins. The script uses files from shared folder, particularly Jenkins global config file, config files for each of the jobs and file containing list of all required plugins and its dependencies. In order to create all jobs and install all neccessray plugins, Jenkins command line tool is used, like this:
    
    		sudo java -jar jenkins-cli.jar -s http://localhost:8080/ create-job puppet < puppet.config.xml
         
