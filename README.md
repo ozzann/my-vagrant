@@ -56,7 +56,7 @@ or ping a server from any other VM using its IP address:
 
 ### GitHub repositories
    
-   There are three GitHub repos take part in the whole process.
+   There are three GitHub repos taking part in the whole process.
    
    First and foremost is [C# Ping server app](https://github.com/ozzann/basic-ping-server). It containes C# source code, some tests which will be run on Jenkins and a Docker file.
    The good test for the app like this is just call a curl command checking a response from a server. So, the tests are bash scripts which run a Docker container and then curl the server.
@@ -111,8 +111,18 @@ or ping a server from any other VM using its IP address:
 
 ## What Vagrant does
 
+Firstly Vagrant creates three virtual machines. All of them are based on Ubuntu 14.04 Desktop OS and have descriptive names. Also, each of them is assigned with specisific IP address, because they need to communicate between each other. This is obviously not enought to build VMs required fot the pipeline, but Vagrant allows us to install any packages and configure a system by provisioners. In this case shell scripts for each of VM is used:
+
+   - b**ootstrap-puppet-master.sh**
+   
+   - **bootstrap-production.sh**
+
+   - **bootstrap-jenkins.sh**
+   
+   
+   
 
 
-
+The information about machines' names, IPs and provisioning scripts is stored in JSON file **nodes.json**.
 
 
