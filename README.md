@@ -166,7 +166,7 @@ or ping a server from any other VM using production VM's IP address:
    
    		sudo java -jar jenkins-cli.jar -s http://localhost:8080/ create-job puppet < puppet.config.xml
         
-    Jenkins plugins are installing by downloading corresponding files from [Kenkins plugins repository](http://mirrors.jenkins-ci.org/plugins/):
+    Jenkins plugins are installing by downloading corresponding files from [Jenkins plugins repository](http://mirrors.jenkins-ci.org/plugins/):
     
     	sudo wget http://mirrors.jenkins-ci.org/plugins/$PLUGINNAME/latest/$PLUGINNAME.hpi -P /var/lib/jenkins/plugins/
         
