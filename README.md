@@ -113,6 +113,7 @@ or ping a server from any other VM using its IP address:
    
 ### The pipeline in action
    
+   1) 
    
    
 
@@ -132,8 +133,8 @@ or ping a server from any other VM using its IP address:
    
    The provision script for Production VM performs three tasks. Firstly, it installs puppet agent. Then it configures /etc/hosts file by adding information about Puppet Master host. Also it makes puppet config /etc/puppet/puppet.conf aware of the Puppet Master by adding server and certname parameters. Now puppet.conf should contain:
    
-   	server=puppet.master.vm
-    certname=production.puppet.node.vm
+   		server=puppet.master.vm
+    	certname=production.puppet.node.vm
     
 
    - **bootstrap-jenkins.sh**
@@ -141,11 +142,11 @@ or ping a server from any other VM using its IP address:
    In the beginning the script installs git and docker packages. Then it pulls Mono docker image because it's quite heavy and while running tests it could result in timeout error. 
    Second step is to install Jenkins. The script uses files from shared folder, particularly Jenkins global config file, config files for each of jobs and plugins list file. In order to create all jobs and install all neccessray plugins, Jenkins command line tool is used, like this:
    
-   	sudo java -jar jenkins-cli.jar -s http://localhost:8080/ create-job puppet < puppet.config.xml
+   		sudo java -jar jenkins-cli.jar -s http://localhost:8080/ create-job puppet < puppet.config.xml
 
     File **jenkins-cli.jar** should be preliminary downloaded from http://localhost:8080
 
-	  sudo wget http://localhost:8080/jnlpJars/jenkins-cli.jar
+	  	sudo wget http://localhost:8080/jnlpJars/jenkins-cli.jar
 
    Installed Jenkins plugins also have specific configuration with information about sCP servers and GitHub repositories described in **be.certipost.hudson.plugin.SCPRepositoryPublisher.xml** and **github-plugin-configuration.xml**
    
