@@ -52,7 +52,7 @@ or ping a server from any other VM using its IP address:
     
     
     
-## What's inside
+## What's inside and how it works
 
 ### GitHub repositories
    
@@ -108,18 +108,31 @@ or ping a server from any other VM using its IP address:
    
    In order to store app's file and then send them to the production, Puppet master has a statisc moin point **/etc/puppet/files**. Creation of this point is managed by **/etc/puppet/fileserver.conf** configuration file.
    
+   
+### The pipeline in action
+   
+   
 
 ## What Vagrant does
 
 Firstly Vagrant creates three virtual machines. All of them are based on Ubuntu 14.04 Desktop OS and have descriptive names. Also, each of them is assigned with specisific IP address, because they need to communicate between each other. This is obviously not enought to build VMs required fot the pipeline, but Vagrant allows us to install any packages and configure a system by provisioners. In this case shell scripts for each of VM is used:
 
-   - b**ootstrap-puppet-master.sh**
+   - **bootstrap-puppet-master.sh**
+   
    
    - **bootstrap-production.sh**
 
    - **bootstrap-jenkins.sh**
+   In the beginning the script installs git and docker packages. Then it pulls Mono docker image because it's quite heavy and while running tests it could result in timeout error. 
+   Second step is to install Jenkins. The script uses files from shared folder, particularly Jenkins global config file, config files for each of jobs and plugins list file. In order to create all jobs and install all neccessray plugins, Jenkins command line tool is used, like this:
    
-   
+   	sudo java -jar jenkins-cli.jar -s http://localhost:8080/ create-job puppet < puppet.config.xml
+
+File **jenkins-cli.jar** should be preliminary downloaded from http://localhost:8080
+
+	  sudo wget http://localhost:8080/jnlpJars/jenkins-cli.jar
+
+Installed Jenkins plugins also have specific configuration with information about sCP servers and GitHub repositories described in **be.certipost.hudson.plugin.SCPRepositoryPublisher.xml** and **github-plugin-configuration.xml**
    
 
 
