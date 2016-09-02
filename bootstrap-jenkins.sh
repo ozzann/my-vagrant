@@ -19,17 +19,6 @@ echo "Installing git ...........................................................
 sudo apt-get -y update
 sudo apt-get -y install git
 
-# Install docker
-echo "Installing docker ......................................................................."
-sudo cp /vagrant/install_docker.sh install_docker.sh
-sudo chmod +x install_docker.sh
-sudo ./install_docker.sh
-
-# Pull a Mono docker image in advance
-# otherwice it does timeout Jenkins app job's build
-echo "Download mono image ....................................................................."
-docker pull mono
-
 
 # Install Jenkins
 if ps aux | grep "jenkins" | grep -v grep 2> /dev/null
@@ -62,17 +51,13 @@ sudo sed -i 's/^JAVA_ARGS=.*/JAVA_ARGS="-Dhudson.diyChunking=false"/' /etc/defau
 restart_jenkins
 
 # Install required Jenkins plugins
-echo "Installing Jenkins plugins ....................................................................."
-
-echo "Installing Github and SCP plugins and its dependencies ........................................ "
-# Download file containing list of required Jenkins plugins
-#sudo wget -O plugins-list https://raw.github.com/ozzann/my-vagrant/master/plugins-list
+echo "Installing Jenkins plugins: Github and SCP plugins and its dependencies ........................................ "
 
 while read line           
 do
     PLUGINNAME=$line
     sudo wget http://mirrors.jenkins-ci.org/plugins/$PLUGINNAME/latest/$PLUGINNAME.hpi -P /var/lib/jenkins/plugins/
-done </vagrant/jenkins/plugins-list
+done <plugins-list
 
 restart_jenkins
 

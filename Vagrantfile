@@ -14,7 +14,11 @@ Vagrant.configure("2") do |config|
             
             if node_name == 'jenkins.server.vm'
                 nodeconfig.vm.network :forwarded_port, guest: 8080, host: 1234
+				
+				nodeconfig.vm.provision "docker", images: ["mono"]
                 
+				nodeconfig.vm.provision "file", source: "plugins-list.txt", destination: "plugins-list"
+
                 # Sync folder containing config and scripts to Jenkins VM
                 nodeconfig.vm.synced_folder "shared/", "/vagrant"
             end
