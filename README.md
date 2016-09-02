@@ -139,11 +139,12 @@ or ping a server from any other VM using production VM's IP address:
 
    Firstly Vagrant creates three virtual machines. The information about machines' names, IPs and provisioning scripts is stored in JSON file **nodes.json**.
    
-   All of them are based on Ubuntu 14.04 Desktop and have descriptive names. Also, each of them is assigned with specific IP address, because they need to communicate between each other. This is obviously not enought to build VMs required fot the pipeline, so Vagrant allows us to install any packages and configure a system by using provisioners. In this case shell scripts for each of VM are used:
+   All of them are based on Ubuntu 14.04 Desktop and have descriptive names. Also, each of them is assigned with specific IP address, because they need to communicate between each other. This is obviously not enought to build VMs required fot the pipeline, so Vagrant allows us to install any packages and configure a system by using provisioners. 
+   Each of the machines has a different configuration: Jenkins VM has significant differences, whilst puppet VMs just slightly differ from each other. 
 
-   - **bootstrap-puppet-master.sh**
-   
-   The script installs puppetmaster to this machine. Beside that it also configures **/etc/hosts** file by adding information about puppet master and puppet agent hosts.
+   - **puppet.master.vm*
+      
+   The provisioning script **bootstrap-puppet-master.sh** installs puppetmaster to this machine. Beside that it also configures **/etc/hosts** file by adding information about puppet master and puppet agent hosts.
    Also, some puppet modules, such as ntp, docker and vcsrepo, are installed.
    
    Because puppet master sends application's files to puppet agent, a static mount point is configured. It is managed in another puppet config file **/etc/puppet/fileserver.conf**.
@@ -151,9 +152,9 @@ or ping a server from any other VM using production VM's IP address:
    In order not to hardcode Puppet Master's and Puppet Agent's IPs, the description of the Puppet Master in **nodes.json** contains a reference to Puppet Agent.
    
    
-   - **bootstrap-production.sh**
+   - **production.puppet.node.vm**
    
-   The provision script for Production VM performs three tasks. Firstly, it installs puppet agent. Then it configures **/etc/hosts** file by adding information about Puppet Master host. Also it makes puppet config **/etc/puppet/puppet.conf** aware of the Puppet Master by adding server and certname parameters. 
+   The provisioning script **bootstrap-production.sh** for Production VM performs three tasks. Firstly, it installs puppet agent. Then it configures **/etc/hosts** file by adding information about Puppet Master host. Also it makes puppet config **/etc/puppet/puppet.conf** aware of the Puppet Master by adding server and certname parameters. 
    After that **/etc/puppet/puppet.conf** should contain:
    
    		server=puppet.master.vm
@@ -162,10 +163,18 @@ or ping a server from any other VM using production VM's IP address:
    In order not to hardcode Puppet Master's and Puppet Agent's IPs, the description of the Production puppet node in **nodes.json** contains a reference to Puppet Master.
     
 
-   - **bootstrap-jenkins.sh**
+   - **jenkins.server.vm**
    
-   In the beginning the script installs git and docker packages. Then it pulls Mono docker image because it's quite heavy and while running tests it could result in timeout error. 
-   Second step is to install Jenkins. The script uses files from shared folder, particularly Jenkins global config file, config files for each of the jobs and the file containing list of all required plugins and its dependencies. In order to create all jobs and install all neccessray plugins, Jenkins command line tool is used, like this:
+   Jenkins VM uses not only shell, but also docker and file provisioning. Vagrant automatically installs Docker and pulls required Mono image:
+   
+   		nodeconfig.vm.provision "docker", images: ["mono"]
+        
+   Apart from synced folder containing jenkins global config and jobs configs, Vagrant also uploads a **plugins-list.txt** file containing list of all required Jenkins plugins and its dependencies:
+   
+   		nodeconfig.vm.provision "file", source: "plugins-list.txt", destination: "plugins-list"
+   
+   Jenkins VM has **bootstrap-jenkins.sh** provisioning script.
+   Firstly, this script installs git. Second step is to install Jenkins. The script uses files from shared folder, particularly Jenkins global config file, config files for each of the jobs and the file containing list of all required plugins and its dependencies. In order to create all jobs and install all neccessray plugins, Jenkins command line tool is used, like this:
    
    		sudo java -jar jenkins-cli.jar -s http://localhost:8080/ create-job puppet < puppet.config.xml
         
@@ -179,7 +188,3 @@ or ping a server from any other VM using production VM's IP address:
 	  	sudo wget http://localhost:8080/jnlpJars/jenkins-cli.jar
 
    Installed Jenkins plugins also have specific configuration with information about SCP servers and GitHub repositories described in **be.certipost.hudson.plugin.SCPRepositoryPublisher.xml** and **github-plugin-configuration.xml**
-   
-
-
-
