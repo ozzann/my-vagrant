@@ -68,7 +68,6 @@ or ping a server from any other VM using production VM's IP address:
         }
 
         node 'production.puppet.node.vm' {
-            include docker
             include production
         }
 
