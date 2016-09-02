@@ -142,7 +142,7 @@ or ping a server from any other VM using production VM's IP address:
    All of them are based on Ubuntu 14.04 Desktop and have descriptive names. Also, each of them is assigned with specific IP address, because they need to communicate between each other. This is obviously not enought to build VMs required fot the pipeline, so Vagrant allows us to install any packages and configure a system by using provisioners. 
    Each of the machines has a different configuration: Jenkins VM has significant differences, whilst puppet VMs just slightly differ from each other. 
 
-   - **puppet.master.vm*
+   - **puppet.master.vm**
       
    The provisioning script **bootstrap-puppet-master.sh** installs puppetmaster to this machine. Beside that it also configures **/etc/hosts** file by adding information about puppet master and puppet agent hosts.
    Also, some puppet modules, such as ntp, docker and vcsrepo, are installed.
