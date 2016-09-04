@@ -53,11 +53,14 @@ restart_jenkins
 # Install required Jenkins plugins
 echo "Installing Jenkins plugins: Github and SCP plugins and its dependencies ........................................ "
 
+tr -d '\015' <plugins-list >plugins-list.txt
 while read line           
 do
     PLUGINNAME=$line
     sudo wget http://mirrors.jenkins-ci.org/plugins/$PLUGINNAME/latest/$PLUGINNAME.hpi -P /var/lib/jenkins/plugins/
-done <plugins-list
+done <plugins-list.txt
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin git
+
 
 restart_jenkins
 
