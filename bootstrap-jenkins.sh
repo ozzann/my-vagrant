@@ -14,6 +14,8 @@ restart_jenkins(){
     done
 }
 
+plugin_dir=/var/lib/jenkins/plugins
+
 # Thanks to github user micw!
 # His script to download jenkins plugins manually can be found at https://gist.github.com/micw/e80d739c6099078ce0f3
 install_plugin(){
