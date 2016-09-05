@@ -14,6 +14,22 @@ restart_jenkins(){
     done
 }
 
+# Thanks to github user micw!
+# His script to download jenkins plugins manually is located on https://gist.github.com/micw/e80d739c6099078ce0f3
+install_plugin(){
+  if [ -f ${plugin_dir}/${1}.hpi -o -f ${plugin_dir}/${1}.jpi ]; then
+    if [ "$2" == "1" ]; then
+      return 1
+    fi
+    echo "Skipped: $1 (already installed)"
+    return 0
+  else
+    echo "Installing: $1"
+    curl -L --silent --output ${plugin_dir}/${1}.hpi  https://updates.jenkins-ci.org/latest/${1}.hpi
+    return 0
+  fi
+}
+
 # Install git
 echo "Installing git .........................................................................."
 sudo apt-get -y update
@@ -53,14 +69,21 @@ restart_jenkins
 # Install required Jenkins plugins
 echo "Installing Jenkins plugins: Github and SCP plugins and its dependencies ........................................ "
 
-tr -d '\015' <plugins-list >plugins-list.txt
-while read line           
-do
-    PLUGINNAME=$line
-    sudo wget http://mirrors.jenkins-ci.org/plugins/$PLUGINNAME/latest/$PLUGINNAME.hpi -P /var/lib/jenkins/plugins/
-done <plugins-list.txt
-sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin git
+install_plugin "git"
+install_plugin "scp"
 
+changed=1
+
+while [ "$changed"  == "1" ]; do
+  echo "Check for missing dependecies ..."
+  changed=0
+  for f in /var/lib/jenkins/plugins/*.hpi ; do
+      deps=$( unzip -p ${f} META-INF/MANIFEST.MF | tr -d '\r' | sed -e ':a;N;$!ba;s/\n //g' | grep -e "^Plugin-Dependencies: " | awk '{ print $2 }' | tr ',' '\n' | awk -F ':' '{ print $1 }' | tr '\n' ' ' )
+      for plugin in $deps; do
+        install_plugin "$plugin" 1 && changed=1
+      done
+  done
+done
 
 restart_jenkins
 
