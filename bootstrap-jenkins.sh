@@ -15,7 +15,7 @@ restart_jenkins(){
 }
 
 # Thanks to github user micw!
-# His script to download jenkins plugins manually is located on https://gist.github.com/micw/e80d739c6099078ce0f3
+# His script to download jenkins plugins manually can be found at https://gist.github.com/micw/e80d739c6099078ce0f3
 install_plugin(){
   if [ -f ${plugin_dir}/${1}.hpi -o -f ${plugin_dir}/${1}.jpi ]; then
     if [ "$2" == "1" ]; then

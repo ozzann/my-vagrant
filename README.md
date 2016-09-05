@@ -167,23 +167,18 @@ or ping a server from any other VM using production VM's IP address:
    Jenkins VM uses not only shell, but also docker and file provisioning. Vagrant automatically installs Docker and pulls required Mono image:
    
    		nodeconfig.vm.provision "docker", images: ["mono"]
-        
-   Apart from synced folder containing jenkins global config and jobs configs, Vagrant also uploads a **plugins-list.txt** file containing list of all required Jenkins plugins and its dependencies:
-   
-   		nodeconfig.vm.provision "file", source: "plugins-list.txt", destination: "plugins-list"
    
    Jenkins VM has **bootstrap-jenkins.sh** provisioning script.
    Firstly, this script installs git. Second step is to install Jenkins. The script uses files from shared folder, particularly Jenkins global config file, config files for each of the jobs and the file containing list of all required plugins and its dependencies. In order to create all jobs and install all neccessray plugins, Jenkins command line tool is used, like this:
    
    		sudo java -jar jenkins-cli.jar -s http://localhost:8080/ create-job puppet < puppet.config.xml
-        
-    Jenkins plugins are installing by downloading corresponding files from [Jenkins plugins repository](http://mirrors.jenkins-ci.org/plugins/):
-    
-    	sudo wget http://mirrors.jenkins-ci.org/plugins/$PLUGINNAME/latest/$PLUGINNAME.hpi -P /var/lib/jenkins/plugins/
-        
 
-    File **jenkins-cli.jar** should be preliminary downloaded from **http://localhost:8080**
+     But before creating Jenkins jobs, file **jenkins-cli.jar** should be preliminary downloaded from **http://localhost:8080**
 
 	  	sudo wget http://localhost:8080/jnlpJars/jenkins-cli.jar
+        
+    Essential Jenkins plugins (Git and SCP) and its dependencies are installing by downloading corresponding files from [Jenkins plugins repository](https://updates.jenkins-ci.org/latest):
+    
+    	curl -L --silent --output ${plugin_dir}/${1}.hpi  https://updates.jenkins-ci.org/latest/${1}.hpi
 
    Installed Jenkins plugins also have specific configuration with information about SCP servers and GitHub repositories described in **be.certipost.hudson.plugin.SCPRepositoryPublisher.xml** and **github-plugin-configuration.xml**
